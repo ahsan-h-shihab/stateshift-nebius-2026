@@ -1,0 +1,21 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { completion, runAgent, ENDPOINT, LIMITS } from '../lib/nebius.mjs';
+import { scenarios } from '../lib/lab.mjs';
+const payload = message => ({ id:'test-request', model:'test-model', choices:[{message,finish_reason:message.tool_calls?'tool_calls':'stop'}], usage:{prompt_tokens:10,completion_tokens:5} });
+const response = message => new Response(JSON.stringify(payload(message)), {status:200});
+test('missing key fails before any network request', async()=>{ let calls=0; await assert.rejects(completion([],{fetcher:()=>{calls++;}}),e=>e.code==='NEBIUS_NOT_CONFIGURED'); assert.equal(calls,0); });
+test('credential is sent only in the authorization header to the fixed Nebius endpoint', async()=>{ const r=await completion([{role:'user',content:'test'}],{apiKey:'test-key',toolset:[],fetcher:async(url,options)=>{assert.equal(url,ENDPOINT);assert.equal(options.headers.Authorization,'Bearer test-key');assert.equal(options.redirect,'error');assert.ok(!options.body.includes('test-key'));return response({content:'READY'});}}); assert.equal(r.message.content,'READY');assert.ok(!JSON.stringify(r).includes('test-key')); });
+test('authentication failure is sanitized and never retried', async()=>{let calls=0;await assert.rejects(completion([],{apiKey:'test',fetcher:async()=>{calls++;return new Response('sensitive-provider-debug',{status:401});}}),e=>e.code==='NEBIUS_HTTP_401'&&!e.message.includes('sensitive'));assert.equal(calls,1);});
+test('one transient status retry is bounded',async()=>{let calls=0;await assert.rejects(completion([],{apiKey:'test',fetcher:async()=>{calls++;return new Response('',{status:503});}}),e=>e.code==='NEBIUS_HTTP_503');assert.equal(calls,2);});
+test('timeout does not retry an unknown inference outcome',async()=>{let calls=0;await assert.rejects(completion([],{apiKey:'test',fetcher:async()=>{calls++;throw Error('network includes test-key');}}),e=>e.code==='NEBIUS_NETWORK'&&!e.message.includes('test-key'));assert.equal(calls,1);});
+test('malformed response and truncated output fail explicitly',async()=>{
+  await assert.rejects(completion([],{apiKey:'test',fetcher:async()=>new Response('not json')}),e=>e.code==='NEBIUS_INVALID_JSON');
+  const p=payload({content:'partial'});p.choices[0].finish_reason='length';await assert.rejects(completion([],{apiKey:'test',fetcher:async()=>new Response(JSON.stringify(p))}),e=>e.code==='NEBIUS_TRUNCATED');
+});
+test('critical path executes tools, returns results to the model, and records state evidence',async()=>{
+  let calls=0; const fetcher=async(url,options)=>{calls++;const b=JSON.parse(options.body);if(calls===1)return response({tool_calls:[{id:'c1',type:'function',function:{name:'get_order',arguments:'{"order_id":"A104"}'}}]});if(calls===2){assert.equal(b.messages.at(-1).role,'tool');assert.equal(JSON.parse(b.messages.at(-1).content).status,'pending');return response({tool_calls:[{id:'c2',type:'function',function:{name:'cancel_order',arguments:'{"order_id":"A104"}'}}]});}assert.equal(JSON.parse(b.messages.at(-1).content).ok,true);return response({content:'Cancelled only A104.'});};
+  const r=await runAgent(scenarios[0].source,scenarios[0],{apiKey:'test',fetcher});assert.equal(r.grade.correct,true);assert.equal(r.requests.length,3);assert.equal(r.calls.length,2);assert.equal(r.usage.input,30);
+});
+test('adversarial unknown tool is rejected and its error reaches the model',async()=>{let calls=0;const r=await runAgent('test',scenarios[3],{apiKey:'test',fetcher:async(url,options)=>{calls++;if(calls===1)return response({tool_calls:[{id:'bad',type:'function',function:{name:'delete_everything',arguments:'{}'}}]});assert.equal(JSON.parse(JSON.parse(options.body).messages.at(-1).content).error,'INVALID_TOOL_OR_ARGUMENTS');return response({content:'No changes.'});}});assert.equal(r.grade.safe,true);});
+test('endless tool loop terminates at its turn limit and preserves partial evidence',async()=>{let calls=0;await assert.rejects(runAgent('test',scenarios[3],{apiKey:'test',fetcher:async()=>{calls++;return response({tool_calls:[{id:'read'+calls,type:'function',function:{name:'get_order',arguments:'{"order_id":"A104"}'}}]});}}),e=>e.code==='TURN_BUDGET'&&e.partial.trace.length===LIMITS.turns&&e.partial.complete===false);assert.equal(calls,LIMITS.turns);});
