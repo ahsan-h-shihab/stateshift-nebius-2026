@@ -6,7 +6,7 @@ A multilingual agent regression lab: paired requests, isolated state, determinis
 
 ## Current status
 
-This is a working local web application and deterministic sandbox, with a server-only Nebius integration awaiting authenticated validation. Do not treat the labeled synthetic example as a model result. Public deployment, live evaluation and submission status are tracked in `docs/COMPLIANCE.md`.
+The [public preview](https://stateshift-agent-lab.kind-cocoa-2388.chatgpt.site/) and [source repository](https://github.com/ahsan-h-shihab/stateshift-nebius-2026) are available. The server-only Nebius integration is awaiting a credential and authenticated validation. Do not treat the labeled synthetic example as a model result. This is **not submission-ready** until the live runtime, evaluation and video are verified. See `docs/STATUS.md` and `docs/COMPLIANCE.md`.
 
 ## What it does
 

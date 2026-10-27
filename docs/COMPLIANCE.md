@@ -8,8 +8,9 @@ Deadline: **2026-10-30 17:00 UTC / 22:00 Asia/Qyzylorda**, corresponding to 10:0
 - [x] New project in an isolated directory.
 - [x] Explicit NVIDIA model and Nebius-only API client.
 - [ ] Successful real runtime call and saved evidence.
-- [ ] Working public application verified independently.
-- [ ] Public GitHub/GitLab/Bitbucket repository with setup instructions and detectable license.
+- [x] Public browser preview deployed and operated without signing in. Live inference is still pending.
+- [ ] Working live public application verified independently.
+- [x] Public repository with setup instructions and detectable MIT license: https://github.com/ahsan-h-shihab/stateshift-nebius-2026
 - [ ] Public YouTube demo, under three minutes, showing actual operation.
 - [ ] English submission and explanations of multilingual examples.
 - [ ] Final track, team and feedback fields completed.

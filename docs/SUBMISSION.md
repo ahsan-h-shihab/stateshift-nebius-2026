@@ -36,8 +36,8 @@ This is a four-workflow synthetic sandbox pilot. Native-speaker review, external
 
 ## Required final fields
 
-- Public repository URL: PENDING — do not invent.
-- Working hosted demo URL: PENDING VERIFIED DEPLOYMENT.
+- Public repository URL: https://github.com/ahsan-h-shihab/stateshift-nebius-2026
+- Hosted preview URL: https://stateshift-agent-lab.kind-cocoa-2388.chatgpt.site/ — publicly verified, but live inference is still blocked. Do not represent the preview as a qualifying completed demo yet.
 - Public YouTube URL, duration under 3 minutes: PENDING RECORDING/UPLOAD.
 - Team/entrant details: complete from the entrant's actual account.
 - NVIDIA/Nebius feedback: describe only real integration observations after the probe and runs.

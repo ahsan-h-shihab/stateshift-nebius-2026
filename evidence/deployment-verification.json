@@ -1,0 +1,33 @@
+{
+  "checkedAt": "2026-10-27T20:20:59.003306+00:00",
+  "site": {
+    "url": "https://stateshift-agent-lab.kind-cocoa-2388.chatgpt.site/",
+    "nativeDeployment": "succeeded",
+    "access": "public; explicitly approved",
+    "browser": "rendered and operated without signing in",
+    "consoleErrors": [],
+    "rawPythonHTTP": "403; Cloudflare error 1010"
+  },
+  "github": {
+    "url": "https://github.com/ahsan-h-shihab/stateshift-nebius-2026",
+    "private": false,
+    "license": "MIT",
+    "verification": "unauthenticated GitHub API and connected file reads"
+  },
+  "codeCommit": "b5a99461b7bfd2b5125f232f0c7c378f60de343b",
+  "unitTests": {
+    "passed": 27,
+    "failed": 0,
+    "provider": "test doubles; not live inference"
+  },
+  "typecheck": "passed",
+  "productionBuild": "passed",
+  "localProductionHTTP": 200,
+  "missingKeyResponse": {
+    "status": 503,
+    "code": "NEBIUS_NOT_CONFIGURED"
+  },
+  "liveInference": "BLOCKED: credential unavailable",
+  "youtube": "not recorded or uploaded",
+  "devpost": "draft prepared, not submitted"
+}
