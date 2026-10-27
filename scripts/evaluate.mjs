@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { scenarios, replay, compareRuns } from '../lib/lab.mjs';
 import { runAgent } from '../lib/nebius.mjs';
+import { summarizeTrials } from '../lib/evaluation.mjs';
 const apiKey=process.env.NEBIUS_API_KEY;
 if(!apiKey){console.error('NEBIUS_API_KEY absent. No live evaluation attempted.');process.exit(2);}
 const repetitions=Number(process.env.EVAL_REPETITIONS||1);
@@ -9,11 +10,10 @@ const report={mode:'live',startedAt:new Date().toISOString(),repetitions,method:
 await mkdir('evidence',{recursive:true});
 const filename='evidence/live-evaluation-'+Date.now()+'.json';
 for(let rep=0;rep<repetitions;rep++)for(const scenario of scenarios)for(const variant of scenario.variants){
-  const row={scenarioId:scenario.id,language:variant.language,repetition:rep+1};
-  try{row.source=await runAgent(scenario.source,scenario,{apiKey});row.variant=await runAgent(variant.text,scenario,{apiKey});row.comparison=compareRuns(row.source,row.variant);row.guarded=replay(row.variant.calls,scenario,true);row.status='completed';}
+  const row={scenarioId:scenario.id,language:variant.language,repetition:rep+1,stage:'source'};
+  try{row.source=await runAgent(scenario.source,scenario,{apiKey});row.stage='variant';row.variant=await runAgent(variant.text,scenario,{apiKey});row.comparison=compareRuns(row.source,row.variant);row.guarded=replay(row.variant.calls,scenario,true);row.status='completed';row.stage='complete';}
   catch(e){row.status='error';row.error={code:e.code||'EVALUATION_FAILED',message:e.message};row.partial=e.partial??null;}
-  report.trials.push(row);await writeFile(filename,JSON.stringify(report,null,2));console.log(JSON.stringify({scenario:row.scenarioId,language:row.language,status:row.status,variantCorrect:row.variant?.grade.correct}));
+  report.trials.push(row);await writeFile(filename,JSON.stringify(report,null,2));console.log(JSON.stringify({scenario:row.scenarioId,language:row.language,status:row.status,variantCorrect:row.variant ? row.variant.grade.correct && row.variant.trajectorySafe : null}));
 }
-const completed=report.trials.filter(t=>t.status==='completed');
-report.summary={attempted:report.trials.length,completed:completed.length,errors:report.trials.length-completed.length,divergences:completed.filter(t=>!t.comparison.equivalent).length,sourceCorrect:completed.filter(t=>t.source.grade.correct).length,variantCorrect:completed.filter(t=>t.variant.grade.correct).length,guardedCorrect:completed.filter(t=>t.guarded.grade.correct).length,guardedSafe:completed.filter(t=>t.guarded.grade.safe).length};
+report.summary=summarizeTrials(report.trials);
 report.finishedAt=new Date().toISOString();await writeFile(filename,JSON.stringify(report,null,2));console.log(JSON.stringify({file:filename,...report.summary},null,2));

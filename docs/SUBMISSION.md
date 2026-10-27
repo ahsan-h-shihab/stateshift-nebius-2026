@@ -22,7 +22,7 @@ The model is responsible for choosing actions from language, not scoring itself.
 
 ## Validation and accomplishments
 
-At the time of drafting: 27 automated tests pass. On 12 authored diagnostic traces, state-and-trajectory checks classify 12 correctly, compared with 5 for tool-name presence and 11 for final-state-only checks. This is a checker evaluation, not a claim about Nemotron's multilingual performance.
+At the time of drafting: 29 automated tests pass. On 12 authored diagnostic traces, state-and-trajectory checks classify 12 correctly, compared with 5 for tool-name presence and 11 for final-state-only checks. This is a checker evaluation, not a claim about Nemotron's multilingual performance.
 
 **Before submission:** replace this paragraph with a concise factual account of completed live experiments, including failures, the exact model ID and the measured latency/cost range. Link the saved evidence. Do not submit with this instruction or with missing evidence.
 

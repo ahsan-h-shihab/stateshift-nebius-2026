@@ -7,15 +7,23 @@
 - [Public browser preview](https://stateshift-agent-lab.kind-cocoa-2388.chatgpt.site/): deployed successfully; opened without signing in after public access was explicitly approved. Synthetic inspector, state diff and navigation work; no browser-console errors observed.
 - [Public repository](https://github.com/ahsan-h-shihab/stateshift-nebius-2026): source pushed to `main`; unauthenticated GitHub API confirms public visibility and MIT license detection.
 - Production build and TypeScript check passed. Clean production startup returned HTTP 200 locally.
-- 27 critical-path tests pass. The 12-trace authored checker evaluation is reproducible; detailed limitations are in `EVALUATION.md`.
+- 29 critical-path tests pass. The 12-trace authored checker evaluation is reproducible; detailed limitations are in `EVALUATION.md`.
 - Browser-exported regression executes and fails on the intended synthetic extra-refund defect.
 - Decision log, source citations, README, environment example, MIT license, submission draft, demo script and compliance checklist are included.
 
-Public deployment code commit: `b5a99461b7bfd2b5125f232f0c7c378f60de343b`. Later documentation-only commits may update this status without changing the deployed program.
+Public deployment code commit: `6f7cddc41314007e276e423ff82396239e431595`. Subsequent CLI evaluation/reporting changes do not alter the deployed application.
 
 Independent verification limitation: an ordinary Python HTTP client received Cloudflare 403 / error 1010 from the hosted site, while the unauthenticated browser rendered and operated the application. The public browser result is verified; unrestricted automated HTTP access is not claimed.
 
 A Windows development watcher encountered EBUSY while an exported regression file was being copied. The development configuration now uses polling on Windows and excludes evidence/download outputs from watching. The production build does not depend on this file watcher.
+
+## Credential follow-up — October 28
+
+The user reported local configuration. Secret-safe checks still found no nonempty `NEBIUS_API_KEY` in the process, Windows user or machine environments, including an unsandboxed check, or the expected repository environment files. Both CLI commands were invoked and stopped before any inference. The user's key location is awaiting clarification; its value was never read or printed.
+
+The native Sites environment response has revision 0 and no entries. The deployed `/api/health` route independently returns `configured: false` and `verified: false`. Sites supports secret storage, but no credential is available to transfer. No deployment secret was changed. No claim about account access, model latency, cost, or output can be made from this blocked preflight.
+
+All 29 tests, the TypeScript check, and the production build passed on this follow-up. The CLI evaluation summary now includes intermediate-state violations in correctness, preserves error denominators, and totals received response usage from partial runs. The smoke probe saves a timestamped, sanitized status record even when blocked.
 
 ## Required next actions
 

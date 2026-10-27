@@ -8,7 +8,7 @@ Pass condition: all known faults in the authored test set are identified with no
 
 ## Completed
 
-`node --test tests/*.test.mjs`: **27 passed, 0 failed** at the last recorded run. Network behavior is tested with explicit test doubles; these results do not validate live Nebius inference.
+`node --test tests/*.test.mjs`: **29 passed, 0 failed** at the last recorded run. Network behavior is tested with explicit test doubles; these results do not validate live Nebius inference.
 
 `node scripts/evaluate-fixtures.mjs`: 12 authored traces, 8 faulty and 4 valid.
 
@@ -28,9 +28,13 @@ Run `node scripts/probe.mjs` first with a server-side `NEBIUS_API_KEY`. Then `no
 
 Record: exact prompt, model/request IDs, token usage, wall-clock latency, final correctness, trajectory safety, paired divergence, gate replay outcome, and full tool trace. Estimate token cost from the saved catalog rate; actual billing may include failed retries. Repeat failures before attributing them to language, even with temperature zero.
 
+The live summary counts final-state correctness separately from correctness including trajectory safety. The correctness denominator is completed pairs; failed pairs remain in the error count and preserve their failed stage and partial evidence. Token totals include received responses from partial runs. Unknown charges for failed requests are not presented as zero.
+
 Candidate mutations require semantic review before testing. Author-provided translations have not received independent native-speaker validation. A translation that changes intent invalidates the paired comparison. Treat English as a reference input, not ground truth: the explicit contract defines ground truth.
 
 No completed live evaluation was available when this report was authored. Do not replace this statement until a real saved evaluation supports the update.
+
+Follow-up on October 28, 2026 (Asia/Qyzylorda): the probe and live evaluation commands were invoked, but both stopped before a provider request because the credential was unavailable. The structured probe record is `evidence/nebius-probe-1793133925797.json`: `requestAttempted: false`, `verified: false`, latency and usage null. This is a blocked preflight, not a model failure or measured trial.
 
 ## Limits
 

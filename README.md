@@ -53,6 +53,8 @@ node scripts/evaluate.mjs
 
 The probe and evaluation create files under `evidence/`. Evaluation defaults to one repetition of twelve source/variant pairs; `EVAL_REPETITIONS=3` permits three. It refuses to run without the required credential. Inspect the probe before spending credits on the full evaluation.
 
+On Windows, `scripts/configure-nebius.ps1` accepts the key through a hidden prompt and saves it to the Windows user environment. A value assigned only inside another terminal does not reach an already-running Codex process. In a new PowerShell session, load the saved value with `$env:NEBIUS_API_KEY = [Environment]::GetEnvironmentVariable('NEBIUS_API_KEY', 'User')` before running the CLI commands. Check availability with `[bool]$env:NEBIUS_API_KEY`; never echo the key itself. Hosted secrets must still be configured separately.
+
 ## Nebius and NVIDIA
 
 Fixed endpoint: `https://api.tokenfactory.nebius.com/v1/chat/completions`.

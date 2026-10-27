@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-10-27T20:45:25.795Z",
+  "provider": "Nebius Token Factory",
+  "requestedModel": "nvidia/Nemotron-3_5-Lightning",
+  "endpoint": "https://api.tokenfactory.nebius.com/v1/chat/completions",
+  "requestAttempted": false,
+  "verified": false,
+  "latencyMs": null,
+  "usage": null,
+  "error": {
+    "code": "NEBIUS_NOT_CONFIGURED",
+    "message": "NEBIUS_API_KEY is absent. No inference attempted."
+  },
+  "status": "blocked"
+}
