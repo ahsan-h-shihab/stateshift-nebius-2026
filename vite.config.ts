@@ -13,6 +13,9 @@ const { d1, r2 } = hostingConfig;
 
 // macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === "seatbelt";
+// Windows may transiently lock newly downloaded evidence files. Polling avoids
+// native FSWatcher EBUSY crashes while an exported regression is being saved.
+const usePolling = isCodexSeatbeltSandbox || process.platform === "win32";
 const managedLinux = readExecutionProfile() === "managed-linux";
 
 const localBindingConfig = {
@@ -48,8 +51,8 @@ export default defineConfig(async ({ command }) => {
       ...(managedLinux
         ? { host: "0.0.0.0", allowedHosts: ["terminal.local"] }
         : {}),
-      ...(isCodexSeatbeltSandbox
-        ? { watch: { useFsEvents: false, usePolling: true } }
+      ...(usePolling
+        ? { watch: { useFsEvents: false, usePolling: true, ignored: ["**/evidence/**", "**/outputs/**", "**/regression.mjs"] } }
         : {}),
     },
     plugins: [

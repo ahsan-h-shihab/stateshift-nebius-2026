@@ -15,6 +15,8 @@ Public deployment code commit: `b5a99461b7bfd2b5125f232f0c7c378f60de343b`. Later
 
 Independent verification limitation: an ordinary Python HTTP client received Cloudflare 403 / error 1010 from the hosted site, while the unauthenticated browser rendered and operated the application. The public browser result is verified; unrestricted automated HTTP access is not claimed.
 
+A Windows development watcher encountered EBUSY while an exported regression file was being copied. The development configuration now uses polling on Windows and excludes evidence/download outputs from watching. The production build does not depend on this file watcher.
+
 ## Required next actions
 
 1. Make the entrant's Nebius key available as `NEBIUS_API_KEY`. On Windows, the entrant can run `scripts/configure-nebius.ps1` to enter it without echoing it. Do not paste it into chat.
